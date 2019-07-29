@@ -33,6 +33,8 @@
             <button id="start">Start</button>
 
         </div>
+        <div id="questionDisplay"> 
+            </div>
 
         <!-- Footer1 -->
         <footer id="footer1Container">
@@ -42,6 +44,10 @@
 </body>
 
 <script type="text/javascript">
+
+    // constructing a queryURL variable we will use instead of the literal string inside of the ajax method
+    var queryURL = "https://opentdb.com/api.php?amount=1&category=9&difficulty=easy&type=multiple";
+
     //  Variable that will hold our setInterval that runs the stopwatch
     var intervalId;
 
@@ -49,14 +55,55 @@
     var clockRunning = false;
     var time = 100;
 
+    function shuffle(array) {
+     array.sort(() => Math.random() - 0.5);
+    }
+
     function displayQuestion() {
-        $("#buttonsContainer").append("<table id = 'table'>This is a question</table>");
-        $("#buttonsContainer").append("<td>Sales Promotion</td>");
-        $("#buttonsContainer").append("<tr id = 'tableRow'></tr>");
-        $("#tableRow").append('<input type="radio" name="question" value="1">1');
-        $("#tableRow").append('<input type="radio" name="question" value="1">2');
-        $("#tableRow").append('<input type="radio" name="question" value="1">3');
-        $("#buttonsContainer").append("<button id='submit'>submit</button>");
+
+        $.ajax({
+      url: queryURL,
+      method: "GET"
+    }).then(function(response) {
+      console.log(response.results[0].correct_answer);
+      console.log(response);
+        
+      var arrAnswers = response.results[0].incorrect_answers;
+      arrAnswers.push(response.results[0].correct_answer);
+      shuffle(arrAnswers);
+      console.log(arrAnswers);
+
+
+     
+        $("#questionDisplay").html(response.results[0].question);
+        $("#questionDisplay").append('<br>');
+
+
+        for (var i in arrAnswers) {
+            var radioHtml = '<label><input type="radio" name="answers" value="' + arrAnswers[i] + '" /> ' + arrAnswers[i] + '</label>';
+            console.log(arrAnswers[i]);
+            $("#questionDisplay").append(radioHtml);
+ 
+        }
+        $("#questionDisplay").append("<br><button id='submit'>submit</button>");
+        $("#submit").on("click", submit);
+
+        function submit() {
+        var radioValue = $("input[name='answers']:checked").val();
+        console.log(response.results[0].correct_answer);
+            if(radioValue === response.results[0].correct_answer){
+                alert(radioValue);
+            }
+        displayQuestion();
+
+
+    }
+      
+    });
+
+
+
+
        
     
    
@@ -118,7 +165,10 @@
 
     }
 
+ 
+
     $("#start").on("click", start);
+   
 
 
     
