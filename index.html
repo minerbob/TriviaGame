@@ -36,11 +36,6 @@
         <div id="questionDisplay"> 
             </div>
 
-        <!-- Footer1 -->
-        <footer id="footer1Container">
-            <h4>Your score is: </h1>
-        </footer>
-
 </body>
 
 <script type="text/javascript">
@@ -53,7 +48,12 @@
 
     // prevents the clock from being sped up unnecessarily
     var clockRunning = false;
-    var time = 100;
+    var time = 120;
+
+    // counters
+    var win = 0;
+    var loss = 0;
+    var unanswered = 0;
 
     function shuffle(array) {
      array.sort(() => Math.random() - 0.5);
@@ -90,9 +90,19 @@
 
         function submit() {
         var radioValue = $("input[name='answers']:checked").val();
+        console.log(radioValue);
         console.log(response.results[0].correct_answer);
             if(radioValue === response.results[0].correct_answer){
-                alert(radioValue);
+                win++;
+                alert(" You are correct");
+            }
+            else if (!radioValue){
+                unanswered++;
+                alert(" You Skipped this question.");
+            }
+            else{
+                loss++;
+                alert("You are wrong");
             }
         displayQuestion();
 
@@ -100,12 +110,6 @@
     }
       
     });
-
-
-
-
-       
-    
    
     }
 
@@ -116,7 +120,7 @@
         $("#display").html(timeDisplay);
         
         if (time === 0){
-        alert("Hello! I am an alert box!!");
+        alert("Game over");
         stop()
     }
 
@@ -162,6 +166,23 @@
         clearInterval(intervalId);
         clockRunning = false;
         //  TODO: Use clearInterval to stop the count here and set the clock to not be running.
+        var radioValue = $("input[name='answers']:checked").val();
+        
+        /* Logic for unanswerd
+        console.log(radioValue);
+        if(!radioValue){
+            unanswered++;
+        }
+        */
+
+        $("#questionDisplay").html("You have: " + win + " Correct and " + loss + " Wrong. You Skipped: " + unanswered + " questions");
+        $("#questionDisplay").append("<br><button id='start'>Start</button>");
+        $("#start").on("click", start);
+
+        time = 120;
+        win = 0;
+        loss = 0;
+        unanswered = 0;
 
     }
 
