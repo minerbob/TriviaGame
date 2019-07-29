@@ -8,7 +8,7 @@
     <!--Link CSS and Reset-->
     <link rel="stylesheet" type="text/css" href=".\assets\css\reset.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href=".\assets\css\style.css">
 
 
@@ -22,35 +22,77 @@
 
     <!-- Header -->
     <header id="headerTop">
-            <div id="headlineTop">Totally Trivia</div>
-        </header>
+        <div id="headlineTop">Totally Trivia</div>
+    </header>
 
-    
-        <div id="gridContainer" class="container">
 
-    
+    <div id="gridContainer" class="container">
+
+
         <div id="buttonsContainer">
-            <button id="button1">Start</button>
-    
+            <button id="start">Start</button>
+
         </div>
-    
+
         <!-- Footer1 -->
         <footer id="footer1Container">
-            <h4>Your score is: </h1> 
+            <h4>Your score is: </h1>
         </footer>
 
 </body>
 
 <script type="text/javascript">
+    //  Variable that will hold our setInterval that runs the stopwatch
+    var intervalId;
 
-   
+    // prevents the clock from being sped up unnecessarily
+    var clockRunning = false;
+    var time = 0;
+    var lap = 1;
 
-    document.onkeyup = function (event) {
+    function count() {
+        time++;
+        var displayTime = time;
+        var timeDisplay = timeConverter(displayTime);
+        $("#display").html(timeDisplay);
 
-    };
+    }
 
+    function timeConverter(t) {
 
+        //  Takes the current time in seconds and convert it to minutes and seconds (mm:ss).
+        var minutes = Math.floor(t / 60);
+        var seconds = t - (minutes * 60);
 
+        if (seconds < 10) {
+            seconds = "0" + seconds;
+        }
+
+        if (minutes === 0) {
+            minutes = "00";
+        }
+
+        else if (minutes < 10) {
+            minutes = "0" + minutes;
+        }
+
+        return minutes + ":" + seconds;
+    }
+
+    function start() {
+
+        $("#buttonsContainer").html("<div id = 'display'>00:00</div>");
+        alert("Hello! I am an alert box!!");
+
+        //  TODO: Use setInterval to start the count here and set the clock to runnin
+        if (!clockRunning) {
+            clearInterval(intervalId);
+            intervalId = setInterval(count, 1000)
+            clockRunning = true;
+        }
+    }
+
+    $("#start").on("click", start);
 
 </script>
 
